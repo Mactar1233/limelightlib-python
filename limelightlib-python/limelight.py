@@ -11,16 +11,30 @@ def broadcast_message(message, port):
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         sock.sendto(message.encode(), ('255.255.255.255', port))
 
-def broadcast_on_all_interfaces(message, port):
+def broadcast_on_all_interfaces(message, port, debug):
+    # First, gather all network information
+    networks = []
     for adapter in ifaddr.get_adapters():
         for ip in adapter.ips:
-            if ip.is_IPv4:
-                net = ipaddress.ip_network(f"{ip.ip}/{ip.network_prefix}", False)
+            if isinstance(ip.ip, str):  # Checks for IPv4 based on whether it's a string
+                net = ipaddress.ip_network(f"{ip.ip}/{ip.network_prefix}", strict=False)
+                networks.append((adapter.name, ip.ip, net.broadcast_address))
             else:
-                net = ipaddress.ip_network(f"{ip.ip[0]}/{ip.network_prefix}", False)
+                continue  # Skip non-IPv4 addresses
+
+    # Print all discovered network interfaces
+    for name, ip, broadcast in networks:
+        if debug:
+            print(f"Adapter: {name}, IP: {ip}, Broadcast: {broadcast}")
+
+    # Now, broadcast the message on each network
+    for _, _, broadcast in networks:
+        try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP) as sock:
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-                sock.sendto(message.encode(), (str(net.broadcast_address), port))
+                sock.sendto(message.encode(), (str(broadcast), port))
+        except Exception as e:
+            print(f"Failed to broadcast on {broadcast}: {e}")
 
 def listen_for_responses(port,timeout=1):
     discovered_devices = []
@@ -36,8 +50,8 @@ def listen_for_responses(port,timeout=1):
             pass
     return discovered_devices
 
-def discover_limelights(broadcast_port=5809, listen_port=5809, timeout=2):
-    broadcast_on_all_interfaces("LLPhoneHome",broadcast_port)
+def discover_limelights(broadcast_port=5809, listen_port=5809, timeout=2, debug=False):
+    broadcast_on_all_interfaces("LLPhoneHome",broadcast_port,debug)
     return listen_for_responses(listen_port,timeout)
 
 class Limelight:
