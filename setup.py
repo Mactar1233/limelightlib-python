@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     
 setup(
 name='limelightlib-python',
-version='0.9.3',
+version='0.9.4',
 url='https://limelightvision.io',
 author='Brandon Hjelstrom',
 author_email='brandon@limelightvision.io',
