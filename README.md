@@ -13,7 +13,11 @@ if discovered_limelights:
     limelight_address = discovered_limelights[0] 
     limelight = limelight.Limelight(limelight_address)
     results = limelight.get_results()
+    status = limelight.get_status()
+    print("-----")
     print("targeting results:", results)
+    print("-----")
+    print("status:", status)
 
     limelight.enable_websocket()
     while(True):
