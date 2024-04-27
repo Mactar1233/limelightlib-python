@@ -73,8 +73,7 @@ class ClassifierResult:
 def parse_results(json_data):
     start_time = time.time()
     if(json_data is not None):
-        results_data = json_data.get("Results", {})
-        parsed_result = GeneralResult(results_data)
+        parsed_result = GeneralResult(json_data)
         end_time = time.time()
         elapsed_time_ms = (end_time - start_time) * 1000
         parsed_result.parse_latency = elapsed_time_ms
