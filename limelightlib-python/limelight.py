@@ -129,20 +129,20 @@ class Limelight:
 
     def get_name(self):
         status = self.get_status()
-        if status and 'status' in status:
-            return status['status'].get('name', None)
+        if status:
+            return status.get('name', None)
         return None
 
     def get_temp(self):
         status = self.get_status()
-        if status and 'status' in status:
-            return status['status'].get('temp', None)
+        if status:
+            return status.get('temp', None)
         return None
 
     def get_fps(self):
         status = self.get_status()
-        if status and 'status' in status:
-            return status['status'].get('fps', None)
+        if status:
+            return status.get('fps', None)
         return None
 
     def enable_websocket(self):
@@ -165,6 +165,7 @@ class Limelight:
         if self.ws:
             self.ws.close()
             self.ws_thread.join()
+            print("LL websocket disabled.")
 
     def get_latest_results(self):
         return self.latest_results
