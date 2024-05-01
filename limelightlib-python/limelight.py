@@ -108,13 +108,13 @@ class Limelight:
 
     def capture_snapshot(self, snapname=""):
         params = {'snapname': snapname}
-        return requests.post(f"{self.base_url}/capturesnapshot", params=params)
+        return requests.post(f"{self.base_url}/capture-snapshot", params=params)
 
     def upload_snapshot(self, snapname, image_path):
         params = {'snapname': snapname}
         with open(image_path, 'rb') as image_file:
             files = {'file': image_file}
-            return requests.post(f"{self.base_url}/uploadsnapshot", params=params, files=files)
+            return requests.post(f"{self.base_url}/upload-snapshot", params=params, files=files)
 
     def snapshot_manifest(self):
         return requests.get(f"{self.base_url}/snapshotmanifest").json()
