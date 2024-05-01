@@ -183,7 +183,7 @@ class Limelight:
         if index is not None:
             params['index'] = index
 
-        response = requests.post(f"{self.base_url}/upload-python", headers=headers, params=params, data=profile_json)
+        response = requests.post(f"{self.base_url}/upload-python", headers=headers, params=params, data=pythonstring)
         return response
 
 
@@ -203,6 +203,7 @@ class Limelight:
             params['index'] = index
 
         with open(file_path, 'rb') as nn_file:
+            headers = {'Content-Type': 'text/plain'}
             file_contents = nn_file.read()
             return requests.post(f"{self.base_url}/upload-nnlabels", params=params, headers=headers, data=file_contents)
 
