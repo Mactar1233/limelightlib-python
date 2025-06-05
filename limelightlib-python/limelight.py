@@ -50,9 +50,28 @@ def listen_for_responses(port,timeout=1):
             pass
     return discovered_devices
 
-def discover_limelights(broadcast_port=5809, listen_port=5809, timeout=2, debug=False):
+def discover_limelights(broadcast_port=5809, listen_port=5809, timeout=2, debug=False, return_names=False):
     broadcast_on_all_interfaces("LLPhoneHome",broadcast_port,debug)
-    return listen_for_responses(listen_port,timeout)
+    ips = listen_for_responses(listen_port, timeout)
+    
+    results = []
+    for ip in ips:
+        name = None
+        if return_names:
+            try:
+                ll = Limelight(ip)
+                name = ll.get_name()
+            except Exception as e:
+                if debug:
+                    print(f"Failed to get name for {ip}: {e}")
+        results.append({"ip": ip, "name": name})
+    return results
+
+def get_ip_by_name(discovered, name):
+    for entry in discovered:
+        if entry["name"] == name:
+            return entry["ip"]
+    return None
 
 class Limelight:
     def __init__(self, address):
