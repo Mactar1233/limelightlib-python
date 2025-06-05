@@ -73,6 +73,12 @@ def get_ip_by_name(discovered, name):
             return entry["ip"]
     return None
 
+def get_name_by_ip(discovered, ip_address):
+    for entry in discovered:
+        if entry["ip"] == ip_address:
+            return entry["name"]
+    return None 
+
 class Limelight:
     def __init__(self, address):
         self.base_url = f"http://{address}:5807"
